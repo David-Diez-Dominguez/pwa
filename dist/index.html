@@ -1,0 +1,32 @@
+<html lang="en">
+<!--https://www.youtube.com/watch?v=Zxf1mnP5zcw-->
+<!--https://developers.google.com/maps/documentation/javascript/overview-->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Alejandro PWA</title>
+  <link type="text/css" href="/css/styles.css" rel="stylesheet">
+  <link rel="manifest" href="/manifest.json">
+  <!-- ios support -->
+  <link rel="apple-touch-icon" href="/icons/icon-96x96.png">
+  <meta name="apple-mobile-web-app-status-bar" content="#FFE1C4">
+  <meta name="theme-color" content="#FFE1C4">
+</head>
+
+<body>
+  <h1 style="text-align: center;">Google Map</h1>
+  <a href="/pages/createImage.html">add image</a>
+  <div id="map"></div>
+
+
+  <script src="/js/app.js"></script>
+  <script src="/js/map.js"></script>
+  <script type="module" src="bundle.js"></script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAN0iXjvVJ4WqZkYVGFUvGN1uGWgY94es&callback=initMap&v=weekly"
+    async></script>
+</body>
+
+</html>
