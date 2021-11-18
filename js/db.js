@@ -92,6 +92,7 @@ deletePhotoForm.addEventListener('submit', (e) => {
       deletePhotoForm.reset()
     })
 })
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 
 function uploadImage() {
@@ -155,9 +156,11 @@ snap.addEventListener("click", function () {
   document.body.appendChild(button)
 
   button.addEventListener('click', () => {
-    const storageRef = ref(storage, "penis");
+    var fileName = new Date() + '-' + 'base64';
+    console.log(fileName)
+    const storageRef = ref(storage, fileName );
     uploadString(storageRef, image.src, "data_url").then((snapshot) => {
-      console.log(snapshot);
+     console.log();
     });
   })
 
