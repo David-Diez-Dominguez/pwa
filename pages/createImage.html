@@ -35,6 +35,18 @@
     
         <button>delete image</button>
       </form>
+
+      <input type="file" id="photo" />
+      <button onclick="uploadImage()">Upload Image</button>
+      <!-- Stream video via webcam -->
+    
+      <video id="video" width=400 height=400 playsinline controls autoplay></video>
+    
+      <!-- Trigger canvas web API -->
+      <button id="snap">Capture</button>
+    
+      <!-- Webcam video snapshot -->
+      <canvas id="canvas" width="640" height="480"></canvas>
     
       <script src="/dist/bundle.js"></script>
      <script src="/js/app.js"></script>    
