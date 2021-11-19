@@ -41,7 +41,9 @@ getDocs(colRef)
 //add documents
 
 let position
+
 const addPhotoForm = document.querySelector('.add')
+if (addPhotoForm) {
 addPhotoForm.addEventListener('submit', (e) => {
   e.preventDefault()
 
@@ -79,9 +81,12 @@ addPhotoForm.addEventListener('submit', (e) => {
   }
 
 })
+}
+
 
 //delete documents
 const deletePhotoForm = document.querySelector('.delete')
+if(deletePhotoForm){
 deletePhotoForm.addEventListener('submit', (e) => {
   e.preventDefault()
 
@@ -92,25 +97,9 @@ deletePhotoForm.addEventListener('submit', (e) => {
       deletePhotoForm.reset()
     })
 })
+}
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-
-function uploadImage() {
-  const ref = storage().ref();
-  const file = document.querySelector("#photo").files[0];
-  const name = +new Date() + "-" + file.name;
-  const metadata = {
-    contentType: file.type
-  };
-  const task = ref.child(name).put(file, metadata);
-  task
-    .then(snapshot => snapshot.ref.getDownloadURL())
-    .then(url => {
-      console.log(url);
-      document.querySelector("#image").src = url;
-    })
-    .catch(console.error);
-}
 
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
@@ -150,17 +139,18 @@ snap.addEventListener("click", function () {
   var image = new Image();
   image.id = "pic";
   image.src = canvas.toDataURL();
-  console.log(image.src)
+  // console.log(image.src)
   var button = document.createElement('button')
   button.textContent = 'Upload Image'
   document.body.appendChild(button)
 
   button.addEventListener('click', () => {
     var fileName = new Date() + '-' + 'base64';
-    console.log(fileName)
     const storageRef = ref(storage, fileName );
-    uploadString(storageRef, image.src, "data_url").then((snapshot) => {
-     console.log();
+    const upload =  uploadString(storageRef, image.src, "data_url").then((snapshot) => {
+    getDownloadURL(snapshot.ref).then((downloadurl) =>{
+      addPhotoForm.name.value = downloadurl.toString();
+    })
     });
   })
 
