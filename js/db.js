@@ -1,13 +1,13 @@
 // https://www.youtube.com/watch?v=vK2NoOoqyRo
-import { initializeApp } from "firebase/app";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
 import {
   getFirestore, collection, getDocs,
   addDoc, deleteDoc, doc, GeoPoint
-} from 'firebase/firestore';
+} from 'https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js';
 
 import {
   getStorage, ref, getDownloadURL, uploadString
-} from 'firebase/storage';
+} from 'https://www.gstatic.com/firebasejs/9.4.0/firebase-storage.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCAN0iXjvVJ4WqZkYVGFUvGN1uGWgY94es",

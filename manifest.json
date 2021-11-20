@@ -1,7 +1,7 @@
 {
   "name": "Alejandro PWA",
   "short_name": "Alejandro_PWA",
-  "start_url": "/dist/index.html",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffdd80",
   "theme_color": "#ffd663",
