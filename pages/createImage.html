@@ -11,6 +11,19 @@
         <meta name="apple-mobile-web-app-status-bar" content="#FFE1C4">
         <meta name="theme-color" content="#FFE1C4">
       </head>
+      <style>
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        
+        /* Firefox */
+        input[type=number] {
+          -moz-appearance: textfield;
+        }
+        </style>
 <body>
 
     <h2>Add new image</h2>
@@ -20,10 +33,10 @@
         <input type="text" name="name" required >
         <br>
         <label for="latitude">Latitude</label>
-        <input type="text" name="latitude">
+        <input type="number" inputmode="numeric" name="latitude" >
         <br>
         <label for="longnitude">longnitude</label>
-        <input type="text" name="longnitude">
+        <input type="number" inputmode="numeric"  name="longnitude">
         <br>
         <input type="hidden" name="url" readonly required>    
         <br>

@@ -26,17 +26,17 @@ const db = getFirestore()
 
 const colRef = collection(db, 'Photos')
 
-getDocs(colRef)
-  .then((snapshot) => {
-    let photos = []
-    snapshot.docs.forEach((doc) => {
-      photos.push({ ...doc.data(), id: doc.id })
-    })
-    console.log(photos)
-  })
-  .catch(err => {
-    console.log(err.message)
-  })
+// getDocs(colRef)
+//   .then((snapshot) => {
+//     let photos = []
+//     snapshot.docs.forEach((doc) => {
+//       photos.push({ ...doc.data(), id: doc.id })
+//     })
+//     console.log(photos)
+//   })
+//   .catch(err => {
+//     console.log(err.message)
+//   })
 
 //add documents
 
@@ -44,72 +44,81 @@ let position
 
 const addPhotoForm = document.querySelector('.add')
 if (addPhotoForm) {
-addPhotoForm.addEventListener('submit', (e) => {
+  addPhotoForm.addEventListener('submit', (e) => {
 
-   e.preventDefault()
-   
-   if (!addPhotoForm.url.value || !addPhotoForm.name.value) {
     e.preventDefault()
-     alert('take a picture first before submitting a form')
-     return false
-    
-   }
+
+    //  if (!addPhotoForm.url.value || !addPhotoForm.name.value) {
+    //   e.preventDefault()
+    //    alert('take a picture first before submitting a form')
+    //    return false
+
+    //  }
 
 
-  if (addPhotoForm.latitude.value == "" && addPhotoForm.longnitude.value == "") {
+    if (addPhotoForm.latitude.value == "" && addPhotoForm.longnitude.value == "") {
 
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((pos) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((pos) => {
 
-        position = new GeoPoint(pos.coords.latitude, pos.coords.longitude);
-        addDoc(colRef, {
-          name: addPhotoForm.name.value,
-          position: position,
-          url: addPhotoForm.url.value,
-        }).then(() => {
-          addPhotoForm.reset()
+          position = new GeoPoint(pos.coords.latitude, pos.coords.longitude);
+          addDoc(colRef, {
+            name: addPhotoForm.name.value,
+            position: position,
+            url: addPhotoForm.url.value,
+          }).then(() => {
+            addPhotoForm.reset()
+          })
+
         })
+      } else {
+        // wenn kein gps oder keine koordinaten in input#
+        console.log('fehelerrrrr');
+      }
 
+
+    }
+    else if (addPhotoForm.latitude.value == "" || addPhotoForm.longnitude.value == "") {
+      alert('please provide values for latitude and longnitude')
+    }
+    else {
+      if (addPhotoForm.latitude.value > 90 || addPhotoForm.latitude.value < -90) {
+        alert("Latitude must be a number between -90 and 90 but was: " + addPhotoForm.latitude.value)
+      }
+      if (addPhotoForm.longnitude.value > 180 || addPhotoForm.latitude.value < -180) {
+        alert("Longnitude must be a number between -90 and 90 but was: " + addPhotoForm.longnitude.value)
+      }
+      addDoc(colRef, {
+        name: addPhotoForm.name.value,
+        position: new GeoPoint(addPhotoForm.latitude.value, addPhotoForm.longnitude.value),
+        url: addPhotoForm.url.value
+
+      }).then(() => {
+        addPhotoForm.reset();
+        console.log('success')
+        alert('form submitted successfully')
       })
-    } else {
-      // wenn kein gps oder keine koordinaten in input#
-      console.log('fehelerrrrr');
     }
 
-
-  }
-  else {
-    addDoc(colRef, {
-      name: addPhotoForm.name.value,
-      position: new GeoPoint(addPhotoForm.latitude.value, addPhotoForm.longnitude.value),
-      url: addPhotoForm.url.value
-    
-    }).then(() => {
-      addPhotoForm.reset();
-      alert('form submitted successfully')
-    })
-  }
-
-})
+  })
 }
 
 
 //delete documents
 const deletePhotoForm = document.querySelector('.delete')
-if(deletePhotoForm){
-deletePhotoForm.addEventListener('submit', (e) => {
-  e.preventDefault()
+if (deletePhotoForm) {
+  deletePhotoForm.addEventListener('submit', (e) => {
+    e.preventDefault()
 
-  const docRef = doc(db, 'Photos', deletePhotoForm.id.value)
+    const docRef = doc(db, 'Photos', deletePhotoForm.id.value)
 
-  deleteDoc(docRef)
-    .then(() => {
-      deletePhotoForm.reset()
-    })
-})
+    deleteDoc(docRef)
+      .then(() => {
+        deletePhotoForm.reset()
+      })
+  })
 }
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 
 const video = document.getElementById('video');
@@ -156,13 +165,14 @@ snap.addEventListener("click", function () {
   document.body.appendChild(button)
 
   button.addEventListener('click', () => {
+    this.setAttribute('display', 'none')
     var fileName = new Date() + '-' + 'base64';
-    const storageRef = ref(storage, fileName );
-    const upload =  uploadString(storageRef, image.src, "data_url").then((snapshot) => {
-    getDownloadURL(snapshot.ref).then((downloadurl) =>{
-      addPhotoForm.url.value = downloadurl.toString();
-      alert('image uploaded successfully');
-    })
+    const storageRef = ref(storage, fileName);
+    const upload = uploadString(storageRef, image.src, "data_url").then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((downloadurl) => {
+        addPhotoForm.url.value = downloadurl.toString();
+        alert('image uploaded successfully');
+      })
     });
     context.clearRect(0, 0, canvas.width, canvas.height);
   })
