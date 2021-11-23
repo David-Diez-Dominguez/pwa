@@ -13,6 +13,103 @@
   <link rel="apple-touch-icon" href="/icons/icon-96x96.png">
   <meta name="apple-mobile-web-app-status-bar" content="#FFE1C4">
   <meta name="theme-color" content="#FFE1C4">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
+
+
+    import {
+      getFirestore, collection, getDocs,
+      addDoc, deleteDoc, doc, GeoPoint
+    } from 'https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCAN0iXjvVJ4WqZkYVGFUvGN1uGWgY94es",
+      authDomain: "testmapproject-332010.firebaseapp.com",
+      projectId: "testmapproject-332010",
+      storageBucket: "testmapproject-332010.appspot.com",
+      messagingSenderId: "693967843436",
+      appId: "1:693967843436:web:553f1a2749c93b30df2849"
+    };
+    initializeApp(firebaseConfig)
+
+    const db = getFirestore()
+
+    const colRef = collection(db, 'Photos')
+
+    getDocs(colRef)
+      .then((snapshot) => {
+        let photos = []
+        snapshot.docs.forEach((doc) => {
+          // console.log(doc.data().url);
+          addMarker({ lat: doc.data().position.latitude, lng: doc.data().position.longitude }, doc.data().url.toString())
+        })
+        console.log()
+      })
+      .catch(err => {
+        console.log(err.message)
+      })
+
+
+     
+    var options = {
+        zoom: 3,
+        minZoom: 3,
+        center: {
+            lat: 50.10,
+            lng: 8.5
+        }
+    }
+    var map = new
+        google.maps.Map(document.getElementById('map'), options);
+  
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            var picture = '/img/ffm.jpeg';
+            addMarker({ lat, lng }, picture);
+  
+        });
+    }
+    else {
+        console.log("geolocation is not supported");
+    }
+  
+  
+    addMarker({ lat: 48.5, lng: 2.0 }, "/img/paris.jfif");
+  
+    //add marker function
+    function addMarker(coords, picture) {
+        var marker = new google.maps.Marker({
+            position: coords,
+            animation: google.maps.Animation.DROP,
+            map: map,
+        });
+  
+        var infowindow = new google.maps.InfoWindow({
+            maxWidth: 150,
+            content: `<img src="${picture}" style="width: 120px; height: 100px;">`,
+        })
+  
+        infowindow.open(map, marker);
+  
+        marker.addListener("click", () => {
+            infowindow.open({
+                anchor: marker,
+                map,
+            });
+        });
+  
+  
+  
+    }
+  
+  
+  
+  
+
+
+  </script>
 </head>
 
 <body>
