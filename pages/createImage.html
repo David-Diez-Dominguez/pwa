@@ -33,10 +33,10 @@
         <input type="text" name="name" required >
         <br>
         <label for="latitude">Latitude</label>
-        <input type="number" inputmode="numeric" name="latitude" >
+        <input type="number" inputmode="numeric" name="latitude" placeholder="empty for current position">
         <br>
         <label for="longnitude">longnitude</label>
-        <input type="number" inputmode="numeric"  name="longnitude">
+        <input type="number" inputmode="numeric"  name="longnitude" placeholder="empty for current position">
         <br>
         <input type="hidden" name="url" readonly required>    
         <br>
@@ -61,7 +61,7 @@
       <button id="snap">Capture</button>
     
       <!-- Webcam video snapshot -->
-      <canvas id="canvas" width="640" height="480"></canvas>
+      <canvas id="canvas" width="400" height="400"></canvas>
     
        <script  src="/js/app.js"></script> 
        <script type="module" src="/js/db.js"></script>   
