@@ -48,33 +48,21 @@ if (addPhotoForm) {
 
     e.preventDefault()
 
-    //  if (!addPhotoForm.url.value || !addPhotoForm.name.value) {
-    //   e.preventDefault()
-    //    alert('take a picture first before submitting a form')
-    //    return false
+    if (!addPhotoForm.url.value || !addPhotoForm.name.value) {
+      e.preventDefault()
+      alert('take a picture first before submitting a form')
+      return false
 
-    //  }
+    }
 
 
     if (addPhotoForm.latitude.value == "" && addPhotoForm.longnitude.value == "") {
 
 
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((pos) => {
-
-          position = new GeoPoint(pos.coords.latitude, pos.coords.longitude);
-          addDoc(colRef, {
-            name: addPhotoForm.name.value,
-            position: position,
-            url: addPhotoForm.url.value,
-          }).then(() => {
-            addPhotoForm.reset()
-          })
-
-        })
+        navigator.geolocation.getCurrentPosition(savePosition, showError)
       } else {
-        // wenn kein gps oder keine koordinaten in input#
-        console.log('fehelerrrrr');
+        alert("Geolocation not supported")
       }
 
 
@@ -179,3 +167,35 @@ snap.addEventListener("click", function () {
 
 }
 );
+
+
+function showError(error) {
+  switch (error.code) {
+    case error.PERMISSION_DENIED:
+      alert('User denied the request for Geolocation.');
+      break;
+    case error.POSITION_UNAVAILABLE:
+      alert("Location information is unavailable.");
+      break;
+    case error.TIMEOUT:
+      alert("The request to get user location timed out.");
+      break;
+    case error.UNKNOWN_ERROR:
+      alert("An unknown error occurred.");
+      break;
+  }
+}
+
+
+function savePosition() {
+  position = new GeoPoint(pos.coords.latitude, pos.coords.longitude);
+  addDoc(colRef, {
+    name: addPhotoForm.name.value,
+    position: position,
+    url: addPhotoForm.url.value,
+  }).then(() => {
+    addPhotoForm.reset()
+  }, showError)
+
+}
+
