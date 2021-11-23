@@ -45,7 +45,15 @@ let position
 const addPhotoForm = document.querySelector('.add')
 if (addPhotoForm) {
 addPhotoForm.addEventListener('submit', (e) => {
-  e.preventDefault()
+
+   e.preventDefault()
+   
+   if (!addPhotoForm.url.value || !addPhotoForm.name.value) {
+    e.preventDefault()
+     alert('take a picture first before submitting a form')
+     return false
+    
+   }
 
 
   if (addPhotoForm.latitude.value == "" && addPhotoForm.longnitude.value == "") {
@@ -58,6 +66,7 @@ addPhotoForm.addEventListener('submit', (e) => {
         addDoc(colRef, {
           name: addPhotoForm.name.value,
           position: position,
+          url: addPhotoForm.url.value,
         }).then(() => {
           addPhotoForm.reset()
         })
@@ -73,10 +82,12 @@ addPhotoForm.addEventListener('submit', (e) => {
   else {
     addDoc(colRef, {
       name: addPhotoForm.name.value,
-      position: new GeoPoint(addPhotoForm.latitude.value, addPhotoForm.longnitude.value)
-
+      position: new GeoPoint(addPhotoForm.latitude.value, addPhotoForm.longnitude.value),
+      url: addPhotoForm.url.value
+    
     }).then(() => {
-      addPhotoForm.reset()
+      addPhotoForm.reset();
+      alert('form submitted successfully')
     })
   }
 
@@ -135,7 +146,7 @@ init();
 // Draw image
 var context = canvas.getContext('2d');
 snap.addEventListener("click", function () {
-  context.drawImage(video, 0, 0, 640, 480);
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
   var image = new Image();
   image.id = "pic";
   image.src = canvas.toDataURL();
@@ -149,9 +160,11 @@ snap.addEventListener("click", function () {
     const storageRef = ref(storage, fileName );
     const upload =  uploadString(storageRef, image.src, "data_url").then((snapshot) => {
     getDownloadURL(snapshot.ref).then((downloadurl) =>{
-      addPhotoForm.name.value = downloadurl.toString();
+      addPhotoForm.url.value = downloadurl.toString();
+      alert('image uploaded successfully');
     })
     });
+    context.clearRect(0, 0, canvas.width, canvas.height);
   })
 
 }
