@@ -71,7 +71,14 @@ if (addPhotoForm) {
             addPhotoForm.reset()
           })
 
-        })
+        },
+          function (error) {
+            if (error.code == error.PERMISSION_DENIED) {
+              alert("User denied the request for Geolocation.")
+            }
+          }
+
+        )
       } else {
         alert("Geolocation not supported")
       }
@@ -178,6 +185,3 @@ snap.addEventListener("click", function () {
 
 }
 );
-
-
-
