@@ -40,8 +40,7 @@
       .then((snapshot) => {
         let photos = []
         snapshot.docs.forEach((doc) => {
-          // console.log(doc.data().url);
-          addMarker({ lat: doc.data().position.latitude, lng: doc.data().position.longitude }, doc.data().url.toString())
+          addMarker({ lat: doc.data().position.latitude, lng: doc.data().position.longitude }, doc.data().url)
         })
         console.log()
       })
@@ -100,10 +99,8 @@
             });
         });
   
-  
-  
+       
     }
-  
   
   
   
@@ -119,10 +116,8 @@
 
 
   <script src="/js/app.js"></script>
-  <script src="/js/map.js"></script>
-  <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAN0iXjvVJ4WqZkYVGFUvGN1uGWgY94es&callback=initMap&v=weekly"
-    async></script>
+  <script async="false" 
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAN0iXjvVJ4WqZkYVGFUvGN1uGWgY94es&callback"></script>
 </body>
 
 </html>
