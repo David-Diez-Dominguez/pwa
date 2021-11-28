@@ -26,38 +26,91 @@ const db = getFirestore()
 
 const colRef = collection(db, 'Photos')
 
-// getDocs(colRef)
-//   .then((snapshot) => {
-//     let photos = []
-//     snapshot.docs.forEach((doc) => {
-//       photos.push({ ...doc.data(), id: doc.id })
-//     })
-//     console.log(photos)
-//   })
-//   .catch(err => {
-//     console.log(err.message)
-//   })
-
-//add documents
-
 let position
 
 const addPhotoForm = document.querySelector('.add')
 if (addPhotoForm) {
-  addPhotoForm.addEventListener('submit', (e) => {
+
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const snap = document.getElementById("snap");
+  const errorMsgElement = document.querySelector('span#errorMsg');
+  const submitbtn = document.getElementById('submitbtn');
+
+  const constraints = {
+    audio: false,
+    video: {
+      width: 400, height: 400
+    }
+  };
+
+  // Access webcam
+  async function init() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      handleSuccess(stream);
+    } catch (e) {
+      errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
+    }
+  }
+
+  // Success
+  function handleSuccess(stream) {
+    window.stream = stream;
+    video.srcObject = stream;
+  }
+
+  // Load init
+  init();
+
+  // Draw image
+  var image = new Image();
+  var context = canvas.getContext('2d');
+  snap.addEventListener("click", function () {
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    image.id = "pic";
+    image.src = canvas.toDataURL();
+
+    setTimeout(function(){ 
+      console.log("Ready")
+  }, 10000);
+  var fileName = new Date() + '-' + 'base64';
+  const storageRef = ref(storage, fileName);
+  const upload =  uploadString(storageRef, image.src, "data_url").then((snapshot) => {
+     getDownloadURL(snapshot.ref).then((downloadurl) => {
+      addPhotoForm.url.value = downloadurl.toString();
+     console.log("image submitted");
+     console.log(addPhotoForm.url.value);
+    })
+  });
+  }
+
+  );
+
+
+  submitbtn.addEventListener('click', (e) => {
+
+    
 
     e.preventDefault()
 
-    if (!addPhotoForm.url.value || !addPhotoForm.name.value) {
+    if (!addPhotoForm.url.value) {
       e.preventDefault()
       alert('take a picture first before submitting a form')
       return false
-
+    }
+    else if(!addPhotoForm.name.value){
+      e.preventDefault()
+      alert('Provide a tag before submitting a form')
+      return false
     }
 
+    const currentPosition = document.getElementById('currentpos');
+    const latitude_form = document.getElementById('lat');
+    const longnitude_form = document.getElementById("lng");
 
-    if (addPhotoForm.latitude.value == "" && addPhotoForm.longnitude.value == "") {
-
+    if (currentPosition.checked) {
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((pos) => {
@@ -69,6 +122,8 @@ if (addPhotoForm) {
           }).then(() => {
             alert("form submitted succesfully")
             addPhotoForm.reset()
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            window.location.href="/index.html";
           })
 
         },
@@ -82,7 +137,6 @@ if (addPhotoForm) {
       } else {
         alert("Geolocation not supported")
       }
-
 
     }
     else if (addPhotoForm.latitude.value == "" || addPhotoForm.longnitude.value == "") {
@@ -127,61 +181,14 @@ if (deletePhotoForm) {
 }
 
 
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const snap = document.getElementById("snap");
-const errorMsgElement = document.querySelector('span#errorMsg');
 
-const constraints = {
-  audio: false,
-  video: {
-    width: 400, height: 400
-  }
-};
+// console.log(image.src)
+// var button = document.createElement('button')
+// button.textContent = 'Upload Image'
+// document.body.appendChild(button)
 
-// Access webcam
-async function init() {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    handleSuccess(stream);
-  } catch (e) {
-    errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
-  }
-}
+// button.addEventListener('click', () => {
+  // this.setAttribute('display', 'none')
+  
+// })
 
-// Success
-function handleSuccess(stream) {
-  window.stream = stream;
-  video.srcObject = stream;
-}
-
-// Load init
-init();
-
-// Draw image
-var context = canvas.getContext('2d');
-snap.addEventListener("click", function () {
-  context.drawImage(video, 0, 0, canvas.width, canvas.height);
-  var image = new Image();
-  image.id = "pic";
-  image.src = canvas.toDataURL();
-  // console.log(image.src)
-  var button = document.createElement('button')
-  button.textContent = 'Upload Image'
-  document.body.appendChild(button)
-
-  button.addEventListener('click', () => {
-    this.setAttribute('display', 'none')
-    var fileName = new Date() + '-' + 'base64';
-    const storageRef = ref(storage, fileName);
-    const upload = uploadString(storageRef, image.src, "data_url").then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((downloadurl) => {
-        addPhotoForm.url.value = downloadurl.toString();
-        alert('image uploaded successfully');
-      })
-    });
-    context.clearRect(0, 0, canvas.width, canvas.height);
-  })
-
-}
-);

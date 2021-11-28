@@ -9,10 +9,40 @@
   <title>Alejandro PWA</title>
   <link type="text/css" href="/css/styles.css" rel="stylesheet">
   <link rel="manifest" href="/manifest.json">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!-- ios support -->
   <link rel="apple-touch-icon" href="/icons/icon-96x96.png">
   <meta name="apple-mobile-web-app-status-bar" content="#FFE1C4">
   <meta name="theme-color" content="#FFE1C4">
+
+</head>
+
+<body style="width: 80%; margin: auto;">
+  <div style="text-align: center; width: 80%; margin: auto;">
+    <h1>Instagram World</h1>
+    <div>
+    </div>
+    
+    <h4>On this map you can see all the locations where you have posted a picture</h4>
+    <h4>Do you want to add an image?  Try it here:</h4>
+    <div style="border-color: #000; border-style: solid; width: 68px; height: 60px; margin: auto; border-radius: 10px; ">
+      <a href="/pages/createImage.html" ><img style="padding: 10px;" src="/img/addimage.svg" alt="add new image"
+        title="add new image"></a>
+    </div>
+    
+  </div>
+
+  
+
+
+
+  <div id="map"></div>
+
+
+
+  <script async="false"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAN0iXjvVJ4WqZkYVGFUvGN1uGWgY94es&callback"></script>
+  <script src="/js/app.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
 
@@ -40,7 +70,7 @@
       .then((snapshot) => {
         let photos = []
         snapshot.docs.forEach((doc) => {
-          addMarker({ lat: doc.data().position.latitude, lng: doc.data().position.longitude }, doc.data().url)
+          addMarker({ lat: doc.data().position.latitude, lng: doc.data().position.longitude }, doc.data().url, doc.data().name)
         })
         console.log()
       })
@@ -49,75 +79,53 @@
       })
 
 
-     
     var options = {
-        zoom: 3,
-        minZoom: 3,
-        center: {
-            lat: 50.10,
-            lng: 8.5
-        }
+      zoom: 3,
+      minZoom: 3,
+      center: {
+        lat: 0,
+        lng: 0
+      }
     }
     var map = new
-        google.maps.Map(document.getElementById('map'), options);
-  
+      google.maps.Map(document.getElementById('map'), options);
+
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            var lat = position.coords.latitude;
-            var lng = position.coords.longitude;
-            var picture = '/img/ffm.jpeg';
-            addMarker({ lat, lng }, picture);
-  
-        });
+      navigator.geolocation.getCurrentPosition(function (position) {
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
+      });
     }
     else {
-        console.log("geolocation is not supported");
+      console.log("geolocation is not supported");
     }
-  
-  
-    addMarker({ lat: 48.5, lng: 2.0 }, "/img/paris.jfif");
-  
+
     //add marker function
-    function addMarker(coords, picture) {
-        var marker = new google.maps.Marker({
-            position: coords,
-            animation: google.maps.Animation.DROP,
-            map: map,
+    function addMarker(coords, picture, name) {
+      var marker = new google.maps.Marker({
+        position: coords,
+        animation: google.maps.Animation.DROP,
+        map: map,
+      });
+
+      var infowindow = new google.maps.InfoWindow({
+        maxWidth: 150,
+        content: `<img src="${picture}" style="width: 120px; height: 100px;">
+                     <h4 style="text-align: center;">${name}</h4>`,
+      })
+
+      infowindow.open(map, marker);
+
+      marker.addListener("click", () => {
+        infowindow.open({
+          anchor: marker,
+          map,
         });
-  
-        var infowindow = new google.maps.InfoWindow({
-            maxWidth: 150,
-            content: `<img src="${picture}" style="width: 120px; height: 100px;">`,
-        })
-  
-        infowindow.open(map, marker);
-  
-        marker.addListener("click", () => {
-            infowindow.open({
-                anchor: marker,
-                map,
-            });
-        });
-  
-       
+      });
+
+
     }
-  
-  
-  
-
-
   </script>
-</head>
-
-<body>
-  <h1 style="text-align: center;">Google Map</h1>
-  <a href="/pages/createImage.html">add image</a>
-  <div id="map"></div>
-
-
-  <script src="/js/app.js"></script>
-  <script async="false" 
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAN0iXjvVJ4WqZkYVGFUvGN1uGWgY94es&callback"></script>
 </body>
 
 </html>
