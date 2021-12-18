@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <!--https://www.youtube.com/watch?v=Zxf1mnP5zcw-->
 <!--https://developers.google.com/maps/documentation/javascript/overview-->
@@ -31,17 +32,10 @@
     </div>
     
   </div>
-
-  
-
-
-
   <div id="map"></div>
 
-
-
-  <script async="false"
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAN0iXjvVJ4WqZkYVGFUvGN1uGWgY94es&callback"></script>
+  <script async="false" type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAN0iXjvVJ4WqZkYVGFUvGN1uGWgY94es&callback=initMap"></script>
   <script src="/js/app.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
@@ -78,7 +72,7 @@
         console.log(err.message)
       })
 
-
+      
     var options = {
       zoom: 3,
       minZoom: 3,
@@ -89,16 +83,6 @@
     }
     var map = new
       google.maps.Map(document.getElementById('map'), options);
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        var lat = position.coords.latitude;
-        var lng = position.coords.longitude;
-      });
-    }
-    else {
-      console.log("geolocation is not supported");
-    }
 
     //add marker function
     function addMarker(coords, picture, name) {
