@@ -182,29 +182,16 @@ if (addPhotoForm) {
 
 
 //delete documents
-const deletePhotoForm = document.querySelector('.delete')
-if (deletePhotoForm) {
-  deletePhotoForm.addEventListener('submit', (e) => {
-    e.preventDefault()
+// const deletePhotoForm = document.querySelector('.delete')
+// if (deletePhotoForm) {
+//   deletePhotoForm.addEventListener('submit', (e) => {
+//     e.preventDefault()
 
-    const docRef = doc(db, 'Photos', deletePhotoForm.id.value)
+//     const docRef = doc(db, 'Photos', deletePhotoForm.id.value)
 
-    deleteDoc(docRef)
-      .then(() => {
-        deletePhotoForm.reset()
-      })
-  })
-}
-
-
-
-// console.log(image.src)
-// var button = document.createElement('button')
-// button.textContent = 'Upload Image'
-// document.body.appendChild(button)
-
-// button.addEventListener('click', () => {
-  // this.setAttribute('display', 'none')
-  
-// })
-
+//     deleteDoc(docRef)
+//       .then(() => {
+//         deletePhotoForm.reset()
+//       })
+//   })
+// }
