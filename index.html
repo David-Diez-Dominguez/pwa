@@ -23,28 +23,29 @@
     <h1>Instagram World</h1>
     <div>
     </div>
-    
+
     <h4>On this map you can see all the locations where you have posted a picture</h4>
-    <h4>Do you want to add an image?  Try it here:</h4>
-    <div style="border-color: #000; border-style: solid; width: 68px; height: 60px; margin: auto; border-radius: 10px; ">
-      <a href="/pages/createImage.html" ><img style="padding: 10px;" src="/img/addimage.svg" alt="add new image"
-        title="add new image"></a>
+    <h4>Do you want to add an image? Try it here:</h4>
+    <div
+      style="border-color: #000; border-style: solid; width: 68px; height: 60px; margin: auto; border-radius: 10px; ">
+      <a href="/pages/createImage.html"><img style="padding: 10px;" src="/img/addimage.svg" alt="add new image"
+          title="add new image"></a>
     </div>
-    
+
   </div>
   <div id="map"></div>
 
-  <script async="false" type="text/javascript"
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAN0iXjvVJ4WqZkYVGFUvGN1uGWgY94es&callback=initMap"></script>
+  <script async defer type="text/javascript"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCAN0iXjvVJ4WqZkYVGFUvGN1uGWgY94es&callback"></script>
   <script src="/js/app.js"></script>
+  <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
-
-
     import {
       getFirestore, collection, getDocs,
-      addDoc, deleteDoc, doc, GeoPoint
+      addDoc, deleteDoc, doc, GeoPoint, enableIndexedDbPersistence
     } from 'https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js';
+
 
     const firebaseConfig = {
       apiKey: "AIzaSyCAN0iXjvVJ4WqZkYVGFUvGN1uGWgY94es",
@@ -56,13 +57,29 @@
     };
     initializeApp(firebaseConfig)
 
-    const db = getFirestore()
 
+    const db = getFirestore();
+
+    enableIndexedDbPersistence(db)
+  .catch((err) => {
+      if (err.code == 'failed-precondition') {
+          // Multiple tabs open, persistence can only be enabled
+          // in one tab at a a time.
+          // ...
+      } else if (err.code == 'unimplemented') {
+          // The current browser does not support all of the
+          // features required to enable persistence
+          // ...
+      }
+  });
+
+
+    
     const colRef = collection(db, 'Photos')
 
     getDocs(colRef)
       .then((snapshot) => {
-        let photos = []
+        let markers = []
         snapshot.docs.forEach((doc) => {
           addMarker({ lat: doc.data().position.latitude, lng: doc.data().position.longitude }, doc.data().url, doc.data().name)
         })
@@ -72,9 +89,9 @@
         console.log(err.message)
       })
 
-      
+
     var options = {
-      zoom: 3,
+      zoom: 1.5,
       minZoom: 3,
       center: {
         lat: 0,

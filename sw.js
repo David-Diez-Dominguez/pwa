@@ -3,16 +3,19 @@ const dynamicCacheName = 'site-dynamic-v5';
 const assets = [
   '/',
   '/index.html',
+  "/pages/createImage.html",
+  '/pages/fallback.html',
   '/js/app.js',
+  '/js/db.js',
   '/css/styles.css',
-  '/pages/fallback.html'
+  "/img/addimage.svg"
 ];
 
 // cache size limit function
 const limitCacheSize = (name, size) => {
   caches.open(name).then(cache => {
     cache.keys().then(keys => {
-      if(keys.length > size){
+      if (keys.length > size) {
         cache.delete(keys[0]).then(limitCacheSize(name, size));
       }
     });
@@ -21,10 +24,8 @@ const limitCacheSize = (name, size) => {
 
 // install event
 self.addEventListener('install', evt => {
-  //console.log('service worker installed');
   evt.waitUntil(
     caches.open(staticCacheName).then((cache) => {
-      console.log('caching shell assets');
       cache.addAll(assets);
     })
   );
@@ -46,21 +47,23 @@ self.addEventListener('activate', evt => {
 
 // fetch event
 self.addEventListener('fetch', evt => {
-  //console.log('fetch event', evt);
-  // evt.respondWith(
-  //   caches.match(evt.request).then(cacheRes => {
-  //     return cacheRes || fetch(evt.request).then(fetchRes => {
-  //       return caches.open(dynamicCacheName).then(cache => {
-  //         cache.put(evt.request.url, fetchRes.clone());
-  //         // check cached items size
-  //         limitCacheSize(dynamicCacheName, 15);
-  //         return fetchRes;
-  //       })
-  //     });
-  //   }).catch(() => {
-  //     if(evt.request.url.indexOf('.html') > -1){
-  //       return caches.match('/pages/fallback.html');
-  //     } 
-  //   })
-  // );
-});
+  if (evt.request.url.indexOf('firestore.googleapis.com') === -1) {
+    evt.respondWith(
+      caches.match(evt.request).then(cacheRes => {
+        return cacheRes || fetch(evt.request).then(fetchRes => {
+          return caches.open(dynamicCacheName).then(cache => {
+            cache.put(evt.request.url, fetchRes.clone());
+            // check cached items size
+            limitCacheSize(dynamicCacheName, 20);
+            return fetchRes;
+          })
+        });
+      }).catch(() => {
+        if (evt.request.url.indexOf('.html') > -1) {
+          return caches.match('/pages/fallback.html');
+        }
+      })
+    );
+  }
+}
+);
